@@ -131,7 +131,7 @@ function parseIdentify(input) {
   return prop;
 };
 
-exports.identify = function(pathOrArgs, callback) {
+exports.identify = function(pathOrArgs, callback, threadOptions) {
   var isCustom = Array.isArray(pathOrArgs),
       isData,
       args = isCustom ? ([]).concat(pathOrArgs) : ['-verbose', pathOrArgs];
@@ -146,7 +146,9 @@ exports.identify = function(pathOrArgs, callback) {
     args[args.length-1] = '-';
     callback = pathOrArgs;
   }
-  var proc = exec2(exports.identify.path, args, {timeout:120000}, function(err, stdout, stderr) {
+  if(!threadOptions) threadOptions = {};
+  threadOptions.timeout = 120000;
+  var proc = exec2(exports.identify.path, args, threadOptions, function(err, stdout, stderr) {
     var result, geometry;
     if (!err) {
       if (isCustom) {
